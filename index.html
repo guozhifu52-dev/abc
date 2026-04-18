@@ -377,7 +377,7 @@
         if(photoFrame) photoFrame.addEventListener('click', (e) => { if(e.target !== resetPhotoBtn && !resetPhotoBtn.contains(e.target)) photoUploadInput.click(); });
         resetPhotoBtn.addEventListener('click', (e) => { e.stopPropagation(); resetToConfiguredDefault(); });
 
-        const YOUR_LOCAL_DEFAULT_IMAGE = "http://tdp4pmnhp.hd-bkt.clouddn.com/2e2e26d73c646dc46e132d5437109268.jpg?e=1776526508&token=uXxC-uRUnmNEaCgKKKFIXDA98N8VKx9SSsBnFPFJ:gozwOfyxAQ41OzRR2t1QceW6rbM=";
+        const YOUR_LOCAL_DEFAULT_IMAGE = "ozwOfyxAQ41OzRR2t1QceW6rbM=";
         setDefaultLocalImage(YOUR_LOCAL_DEFAULT_IMAGE);
 
         window.addEventListener('beforeunload', () => { if(currentImageUrl && currentImageUrl.startsWith('blob:')) URL.revokeObjectURL(currentImageUrl); });
