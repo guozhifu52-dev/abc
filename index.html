@@ -467,12 +467,15 @@
         </div>
     </div>
 
-    <!-- 受祝福人姓名 (可视化编辑) -->
+    <!-- 受祝福人姓名 (可视化编辑 + 自动保存) -->
     <div class="name-section">
         <div class="birthday-name" id="displayName">🌟 代梦茹 🌟</div>
         <div class="name-edit">
-            <input type="text" id="nameInput" class="name-input" placeholder="输入寿星名字" value="亲爱的朋友">
+            <input type="text" id="nameInput" class="name-input" placeholder="输入寿星名字" value="代梦茹">
             <button id="updateNameBtn" class="btn"><i class="fas fa-pen-alt"></i> 更改名字</button>
+        </div>
+        <div style="font-size: 0.7rem; color:#b87a48; margin-top: 6px;">
+            <i class="fas fa-save"></i> 名字会自动保存，下次打开依旧是它
         </div>
     </div>
 
@@ -586,26 +589,88 @@
             }
         });
 
-        // ========= 3. 名字可视化编辑 ==========
+        // ========= 3. 名字可视化编辑 + 自动保存功能 (localStorage) ==========
         const displayNameSpan = document.getElementById('displayName');
         const nameInput = document.getElementById('nameInput');
         const updateNameBtn = document.getElementById('updateNameBtn');
-        function updateDisplayName() {
+
+        // 定义保存名字到本地存储的函数
+        function saveNameToLocalStorage(name) {
+            try {
+                localStorage.setItem('birthday_person_name', name);
+                console.log('✅ 名字已保存到本地:', name);
+            } catch(e) {
+                console.warn('保存名字失败:', e);
+            }
+        }
+
+        // 定义从本地存储读取名字的函数
+        function loadNameFromLocalStorage() {
+            try {
+                const savedName = localStorage.getItem('birthday_person_name');
+                if (savedName && savedName.trim() !== "") {
+                    return savedName.trim();
+                }
+            } catch(e) {
+                console.warn('读取保存的名字失败:', e);
+            }
+            return null; // 没有保存过
+        }
+
+        // 更新显示名字（同时保存到本地）
+        function updateDisplayNameAndSave() {
             let newName = nameInput.value.trim();
             if(newName === "") {
                 newName = "🌟 特别的你 🌟";
                 nameInput.value = newName;
             }
+            // 更新显示
             displayNameSpan.innerHTML = `🎂 ${newName} 🎂`;
+            // 保存到本地存储
+            saveNameToLocalStorage(newName);
+            // 添加一个视觉反馈提示
+            const hintSpan = document.querySelector('.name-section .fa-save')?.parentElement;
+            if(hintSpan) {
+                const originalText = hintSpan.innerHTML;
+                hintSpan.innerHTML = '<i class="fas fa-check-circle"></i> 名字已自动保存！';
+                setTimeout(() => {
+                    if(hintSpan) hintSpan.innerHTML = originalText;
+                }, 1500);
+            }
         }
-        updateNameBtn.addEventListener('click', updateDisplayName);
-        nameInput.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') updateDisplayName();
-        });
-        nameInput.value = "代梦茹";
-        updateDisplayName();
 
-        // ========= 4. 图片功能增强：支持本地默认图片预加载（方法三核心实现） ==========
+        // 初始化名字：优先使用本地存储的值，否则使用默认值
+        function initializeName() {
+            const savedName = loadNameFromLocalStorage();
+            if (savedName) {
+                // 使用保存的名字
+                nameInput.value = savedName;
+                displayNameSpan.innerHTML = `🎂 ${savedName} 🎂`;
+                console.log('📀 已加载保存的名字:', savedName);
+            } else {
+                // 没有保存过，使用默认值 "代梦茹"
+                const defaultName = "代梦茹";
+                nameInput.value = defaultName;
+                displayNameSpan.innerHTML = `🎂 ${defaultName} 🎂`;
+                // 顺便保存一下默认值，便于下次
+                saveNameToLocalStorage(defaultName);
+            }
+        }
+
+        // 绑定更改名字按钮事件
+        updateNameBtn.addEventListener('click', updateDisplayNameAndSave);
+        // 按回车也保存
+        nameInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                updateDisplayNameAndSave();
+            }
+        });
+
+        // 执行名字初始化
+        initializeName();
+
+        // ========= 4. 图片功能增强：支持本地默认图片预加载 ==========
         const photoUploadInput = document.getElementById('photoUpload');
         const photoContainer = document.getElementById('photoContainer');
         const resetPhotoBtn = document.getElementById('resetPhotoBtn');
@@ -683,7 +748,6 @@
             const testImg = new Image();
             testImg.onload = () => {
                 displayImage(imagePath, true);
-                // 在控制台输出成功信息
                 console.log(`✅ 本地默认图片加载成功: ${imagePath}`);
             };
             testImg.onerror = () => {
@@ -785,11 +849,7 @@
         });
 
         // ========= 关键：在此处配置您的本地默认图片路径（方法三）=========
-        // ★★★ 请根据您的实际目录修改下面的路径 ★★★
-        // 示例1: 如果图片和HTML在同一目录，图片名为 "birthday-gift.jpg"
-        // 示例2: 如果在images子文件夹中: "images/myphoto.png"
-        // 示例3: 使用绝对路径不推荐，建议使用相对路径
-        const YOUR_LOCAL_DEFAULT_IMAGE = "http://tdp4pmnhp.hd-bkt.clouddn.com/2e2e26d73c646dc46e132d5437109268.jpg?e=1776526508&token=uXxC-uRUnmNEaCgKKKFIXDA98N8VKx9SSsBnFPFJ:gozwOfyxAQ41OzRR2t1QceW6rbM=";  // 👈 请修改为您的本地图片路径
+        const YOUR_LOCAL_DEFAULT_IMAGE = "http://tdp4pmnhp.hd-bkt.clouddn.com/2e2e26d73c646dc46e132d5437109268.jpg?e=1776526508&token=uXxC-uRUnmNEaCgKKKFIXDA98N8VKx9SSsBnFPFJ:gozwOfyxAQ41OzRR2t1QceW6rbM=";
 
         // 初始化：尝试加载本地默认图片 (如果路径无效会自动降级为相机图标)
         setDefaultLocalImage(YOUR_LOCAL_DEFAULT_IMAGE);
