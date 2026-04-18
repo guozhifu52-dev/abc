@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>🎂 生日快乐 | 专属祝福页面</title>
+    <title>🎂 生日快乐 | 本地图片个性化祝福</title>
     <!-- 引入 Google Fonts 优雅字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <!-- Font Awesome 6 (免费图标库) -->
@@ -91,9 +91,9 @@
         .card {
             position: relative;
             z-index: 20;
-            max-width: 700px;
+            max-width: 750px;
             width: 100%;
-            background: rgba(255, 255, 245, 0.92);
+            background: rgba(255, 255, 245, 0.94);
             backdrop-filter: blur(2px);
             border-radius: 68px;
             box-shadow: 0 25px 45px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,215,150,0.6);
@@ -137,7 +137,125 @@
             margin-bottom: 24px;
         }
 
-        /* 可编辑祝福区域——可视化编辑核心 */
+        /* ========= 图片上传和展示区域 ========= */
+        .photo-section {
+            background: #fffaf2;
+            border-radius: 48px;
+            padding: 20px 20px 24px;
+            margin: 20px 0 15px;
+            box-shadow: inset 0 0 0 1px #ffe3bc, 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .photo-frame {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffdbb5, #ffb87c);
+            padding: 5px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .photo-frame:hover {
+            transform: scale(1.02);
+        }
+
+        .photo-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #ffe8d4;
+            border: 3px solid white;
+            box-sizing: border-box;
+        }
+
+        .default-photo-icon {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #ffddb0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #c25d2e;
+            font-size: 3rem;
+            border: 3px solid white;
+        }
+
+        .default-photo-icon i {
+            font-size: 4rem;
+            margin-bottom: 6px;
+        }
+
+        .default-photo-icon span {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .photo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .file-upload-label {
+            background: #f3d9bf;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #5a3519;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .file-upload-label:hover {
+            background: #ecc896;
+        }
+
+        .reset-photo-btn {
+            background: #f1e2d2;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #7a4a26;
+            transition: 0.2s;
+        }
+
+        .reset-photo-btn:hover {
+            background: #e6cfb5;
+        }
+
+        .photo-hint {
+            font-size: 0.7rem;
+            color: #b87a48;
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* 可编辑祝福区域 */
         .blessing-area {
             background: #fffaf2;
             border-radius: 48px;
@@ -268,7 +386,7 @@
             color: #a5612c;
         }
 
-        /* 照片装饰/ 互动按钮 */
+        /* 互动按钮组 */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -310,6 +428,7 @@
             .card { padding: 22px 20px 36px; }
             .greeting-text { font-size: 1.3rem; }
             h1 { font-size: 2.2rem; }
+            .photo-frame { width: 140px; height: 140px; }
         }
     </style>
 </head>
@@ -325,9 +444,32 @@
     <h1>生日快乐</h1>
     <div class="sub">· 专属祝福时刻 ·</div>
 
+    <!-- 照片上传和展示区域 - 支持本地默认图片 -->
+    <div class="photo-section">
+        <div class="photo-frame" id="photoFrame">
+            <div id="photoContainer">
+                <!-- 初始会通过JS加载本地默认图片，如果未配置则显示默认图标 -->
+                <div class="default-photo-icon">
+                    <i class="fas fa-camera-retro"></i>
+                    <span>加载中...</span>
+                </div>
+            </div>
+        </div>
+        <div class="photo-controls">
+            <label class="file-upload-label" for="photoUpload">
+                <i class="fas fa-upload"></i> 上传图片
+            </label>
+            <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" style="display: none;">
+            <button id="resetPhotoBtn" class="reset-photo-btn"><i class="fas fa-undo-alt"></i> 重置默认</button>
+        </div>
+        <div class="photo-hint">
+            <i class="fas fa-mouse-pointer"></i> 点击图片更换 · 支持 JPG/PNG
+        </div>
+    </div>
+
     <!-- 受祝福人姓名 (可视化编辑) -->
     <div class="name-section">
-        <div class="birthday-name" id="displayName">🌟 亲爱的朋友 🌟</div>
+        <div class="birthday-name" id="displayName">🌟 代梦茹 🌟</div>
         <div class="name-edit">
             <input type="text" id="nameInput" class="name-input" placeholder="输入寿星名字" value="亲爱的朋友">
             <button id="updateNameBtn" class="btn"><i class="fas fa-pen-alt"></i> 更改名字</button>
@@ -350,7 +492,7 @@
         </div>
     </div>
 
-    <!-- 轻量音乐播放器 (浏览器自动策略需要用户交互，但增加趣味) -->
+    <!-- 轻量音乐播放器 -->
     <div class="music-player">
         <button id="playMusicBtn" class="music-btn"><i class="fas fa-play-circle"></i></button>
         <button id="stopMusicBtn" class="music-btn"><i class="fas fa-stop-circle"></i></button>
@@ -365,15 +507,14 @@
 
     <footer>
         🌟 祝您拥有最美妙的一天 🌟 <br>
-        可视化编辑 · 专属定制心意
+        可视化编辑 · 本地图片预设 | 上传照片定格美好
     </footer>
 </main>
 
 <script>
     (function() {
-        // ---------- 1. 动态气球系统 ----------
+        // ========= 1. 动态气球系统 ==========
         const balloonContainer = document.getElementById('balloonContainer');
-        // 随机生成气球颜色和大小
         function createRandomBalloon(leftPos = null) {
             const balloon = document.createElement('div');
             balloon.className = 'balloon';
@@ -389,32 +530,27 @@
             balloon.style.animationDuration = `${duration}s`;
             balloon.style.animationDelay = `${Math.random() * 5}s`;
             balloonContainer.appendChild(balloon);
-            // 动画结束后移除
             balloon.addEventListener('animationend', () => {
                 balloon.remove();
             });
             return balloon;
         }
 
-        // 初始生成20个气球飘浮
         for(let i = 0; i < 22; i++) {
             setTimeout(() => createRandomBalloon(Math.random() * 95), i * 300);
         }
-        // 定期持续生成新气球
         setInterval(() => {
             if(balloonContainer.children.length < 40) {
                 createRandomBalloon();
             }
         }, 2800);
 
-        // 手动增加气球按钮
         const balloonBtn = document.getElementById('balloonBtn');
         if(balloonBtn) {
             balloonBtn.addEventListener('click', () => {
                 for(let i=0; i<6; i++) {
                     setTimeout(() => createRandomBalloon(Math.random() * 90), i * 80);
                 }
-                // 小提示反馈
                 const statusDiv = document.getElementById('musicStatus');
                 if(statusDiv) statusDiv.innerText = '🎈 新气球飘起来啦!';
                 setTimeout(() => {
@@ -424,7 +560,7 @@
             });
         }
 
-        // ---------- 2. 可视化编辑祝福语核心 ----------
+        // ========= 2. 祝福语可视化编辑 ==========
         const greetingDiv = document.getElementById('greetingMessage');
         const editGreetingInput = document.getElementById('editGreetingInput');
         const updateGreetingBtn = document.getElementById('updateGreetingBtn');
@@ -435,20 +571,14 @@
                 newText = "🎂 祝你生日快乐，每天都充满笑容！🎂";
                 editGreetingInput.value = newText;
             }
-            // 支持简单换行展示（保留换行使用innerHTML，但为了安全只转义，支持<br>或直接换行）
-            // 将用户输入的换行符转成<br>让祝福更自然
             const formatted = newText.replace(/\n/g, '<br>');
             greetingDiv.innerHTML = formatted;
-            // 额外小小动画反馈
             greetingDiv.style.transform = "scale(1.02)";
             setTimeout(() => { greetingDiv.style.transform = "scale(1)"; }, 200);
         }
         updateGreetingBtn.addEventListener('click', updateGreetingText);
-        // 初始化输入框内容与显示内容同步
         editGreetingInput.value = "🎈 愿你的每一天都如糖果般甜蜜，愿你的每一岁都绽放光芒！生日快乐，万事胜意 🎉";
         updateGreetingText();
-
-        // 实时编辑辅助: 按回车也可以更新
         editGreetingInput.addEventListener('keypress', (e) => {
             if(e.key === 'Enter') {
                 e.preventDefault();
@@ -456,7 +586,7 @@
             }
         });
 
-        // ---------- 3. 名字可视化编辑 ----------
+        // ========= 3. 名字可视化编辑 ==========
         const displayNameSpan = document.getElementById('displayName');
         const nameInput = document.getElementById('nameInput');
         const updateNameBtn = document.getElementById('updateNameBtn');
@@ -466,36 +596,222 @@
                 newName = "🌟 特别的你 🌟";
                 nameInput.value = newName;
             }
-            // 增加星星装饰
             displayNameSpan.innerHTML = `🎂 ${newName} 🎂`;
         }
         updateNameBtn.addEventListener('click', updateDisplayName);
         nameInput.addEventListener('keypress', (e) => {
             if(e.key === 'Enter') updateDisplayName();
         });
-        // 初始化显示同步
         nameInput.value = "代梦茹";
         updateDisplayName();
 
-        // ---------- 4. 音乐播放器 (模拟生日歌 Web Audio) 使用 AudioContext 或者 简单音频? 为了不依赖外部文件，使用振荡器做简易旋律 或 用base64?
-        // 为给用户有趣体验，我们使用 Web Audio API 生成简单生日歌旋律片段 (需要用户交互启动)
+        // ========= 4. 图片功能增强：支持本地默认图片预加载（方法三核心实现） ==========
+        const photoUploadInput = document.getElementById('photoUpload');
+        const photoContainer = document.getElementById('photoContainer');
+        const resetPhotoBtn = document.getElementById('resetPhotoBtn');
+        const photoFrame = document.getElementById('photoFrame');
+
+        let isCustomImage = false;      // 是否用户自定义图片（非默认本地图片）
+        let currentImageUrl = null;     // 当前图片URL (blob或dataURL或本地路径)
+        let defaultLocalImagePath = null; // 存储用户配置的本地默认图片路径
+
+        // 显示图片的核心函数（统一渲染img标签）
+        function displayImage(imageUrl, isLocalDefault = false) {
+            // 清空容器，创建img元素
+            photoContainer.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.alt = "生日照片";
+            img.className = "photo-img";
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "50%";
+            // 添加错误处理：如果图片加载失败，回退到默认图标
+            img.onerror = () => {
+                console.warn("图片加载失败，回退至默认图标:", imageUrl);
+                if (!isLocalDefault) {
+                    // 如果当前加载的不是本地预设图片，尝试加载本地预设
+                    if (defaultLocalImagePath) {
+                        setDefaultLocalImage(defaultLocalImagePath);
+                    } else {
+                        resetToDefaultIcon();
+                    }
+                } else {
+                    resetToDefaultIcon();
+                }
+            };
+            photoContainer.appendChild(img);
+            isCustomImage = !isLocalDefault;  // 如果是本地预设图片不算用户自定义
+            currentImageUrl = imageUrl;
+        }
+
+        // 重置为默认图标 (相机图标)
+        function resetToDefaultIcon() {
+            if (currentImageUrl && currentImageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(currentImageUrl);
+            }
+            photoContainer.innerHTML = `
+                <div class="default-photo-icon">
+                    <i class="fas fa-camera-retro"></i>
+                    <span>上传照片</span>
+                </div>
+            `;
+            // 确保样式正确
+            const defaultDiv = photoContainer.querySelector('.default-photo-icon');
+            if (defaultDiv) {
+                defaultDiv.style.width = "100%";
+                defaultDiv.style.height = "100%";
+                defaultDiv.style.display = "flex";
+                defaultDiv.style.flexDirection = "column";
+                defaultDiv.style.alignItems = "center";
+                defaultDiv.style.justifyContent = "center";
+            }
+            isCustomImage = false;
+            currentImageUrl = null;
+        }
+
+        // 设置本地默认图片 (方法三核心API)
+        function setDefaultLocalImage(imagePath) {
+            if (!imagePath || typeof imagePath !== 'string') {
+                console.warn("无效的图片路径，保留原有默认图标");
+                resetToDefaultIcon();
+                return;
+            }
+            defaultLocalImagePath = imagePath;
+            // 尝试加载本地图片，并标记为本地默认图片
+            const testImg = new Image();
+            testImg.onload = () => {
+                displayImage(imagePath, true);
+                // 在控制台输出成功信息
+                console.log(`✅ 本地默认图片加载成功: ${imagePath}`);
+            };
+            testImg.onerror = () => {
+                console.warn(`⚠️ 本地默认图片不存在或无法加载: ${imagePath}，使用默认相机图标。请将图片放在正确路径。`);
+                resetToDefaultIcon();
+            };
+            testImg.src = imagePath;
+        }
+
+        // 处理用户上传的图片文件
+        function handleImageFile(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                alert('请选择图片文件 (JPG, PNG, GIF, WEBP 等)');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('图片大小不能超过 5MB，请压缩后再上传');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                // 如果之前有 blob 或 objectURL 且是自定义的，释放内存
+                if (currentImageUrl && currentImageUrl.startsWith('blob:') && !currentImageUrl.startsWith('blob:null')) {
+                    URL.revokeObjectURL(currentImageUrl);
+                }
+                displayImage(imageUrl, false);
+                // 小动画反馈
+                const frame = document.querySelector('.photo-frame');
+                frame.style.transform = "scale(1.05)";
+                setTimeout(() => { frame.style.transform = ""; }, 200);
+                const hintDiv = document.querySelector('.photo-hint');
+                const originalHint = hintDiv.innerHTML;
+                hintDiv.innerHTML = '<i class="fas fa-check-circle"></i> 照片已更换！🎉';
+                setTimeout(() => {
+                    if(hintDiv) hintDiv.innerHTML = originalHint;
+                }, 2000);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 重置为预设的本地默认图片（如果设置了的话），否则回退到默认相机图标
+        function resetToConfiguredDefault() {
+            if (defaultLocalImagePath) {
+                // 如果有配置本地默认图片，重新加载本地默认图片
+                const testImg = new Image();
+                testImg.onload = () => {
+                    displayImage(defaultLocalImagePath, true);
+                    const hintDiv = document.querySelector('.photo-hint');
+                    const originalHint = hintDiv.innerHTML;
+                    hintDiv.innerHTML = '<i class="fas fa-undo-alt"></i> 已恢复本地预设图片';
+                    setTimeout(() => {
+                        if(hintDiv) hintDiv.innerHTML = originalHint;
+                    }, 1800);
+                };
+                testImg.onerror = () => {
+                    resetToDefaultIcon();
+                    const hintDiv = document.querySelector('.photo-hint');
+                    const originalHint = hintDiv.innerHTML;
+                    hintDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 本地图片丢失，已重置为图标';
+                    setTimeout(() => {
+                        if(hintDiv) hintDiv.innerHTML = originalHint;
+                    }, 1800);
+                };
+                testImg.src = defaultLocalImagePath;
+            } else {
+                resetToDefaultIcon();
+                const hintDiv = document.querySelector('.photo-hint');
+                const originalHint = hintDiv.innerHTML;
+                hintDiv.innerHTML = '<i class="fas fa-info-circle"></i> 未配置本地默认图片，已重置为图标';
+                setTimeout(() => {
+                    if(hintDiv) hintDiv.innerHTML = originalHint;
+                }, 1800);
+            }
+        }
+
+        // 监听文件选择
+        photoUploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageFile(file);
+            }
+            photoUploadInput.value = '';
+        });
+
+        // 点击图片框也可以触发上传
+        if(photoFrame) {
+            photoFrame.addEventListener('click', (e) => {
+                if(e.target === resetPhotoBtn || resetPhotoBtn.contains(e.target)) return;
+                photoUploadInput.click();
+            });
+        }
+
+        // 重置照片按钮：重置到配置的本地默认图片（方法三行为）
+        resetPhotoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetToConfiguredDefault();
+        });
+
+        // ========= 关键：在此处配置您的本地默认图片路径（方法三）=========
+        // ★★★ 请根据您的实际目录修改下面的路径 ★★★
+        // 示例1: 如果图片和HTML在同一目录，图片名为 "birthday-gift.jpg"
+        // 示例2: 如果在images子文件夹中: "images/myphoto.png"
+        // 示例3: 使用绝对路径不推荐，建议使用相对路径
+        const YOUR_LOCAL_DEFAULT_IMAGE = "file:///D:/软件/pyj解释器/1.jpg";  // 👈 请修改为您的本地图片路径
+
+        // 初始化：尝试加载本地默认图片 (如果路径无效会自动降级为相机图标)
+        setDefaultLocalImage(YOUR_LOCAL_DEFAULT_IMAGE);
+
+        // 释放资源
+        window.addEventListener('beforeunload', () => {
+            if(currentImageUrl && currentImageUrl.startsWith('blob:')) {
+                URL.revokeObjectURL(currentImageUrl);
+            }
+        });
+
+        // ========= 5. 音乐播放器 (生日歌) ==========
         let audioCtx = null;
         let isPlaying = false;
         let currentTimeout = null;
-        // 定义音符频率（简化版生日歌前两句）
         const notes = [
-            { freq: 261.63, duration: 0.4 }, // C4
-            { freq: 261.63, duration: 0.4 },
-            { freq: 293.66, duration: 0.4 }, // D4
-            { freq: 261.63, duration: 0.4 },
-            { freq: 349.23, duration: 0.4 }, // F4
-            { freq: 329.63, duration: 0.8 }, // E4
-            { freq: 261.63, duration: 0.4 },
-            { freq: 261.63, duration: 0.4 },
-            { freq: 293.66, duration: 0.4 },
-            { freq: 261.63, duration: 0.4 },
-            { freq: 392.00, duration: 0.4 }, // G4
-            { freq: 349.23, duration: 0.8 }
+            { freq: 261.63, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
+            { freq: 293.66, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
+            { freq: 349.23, duration: 0.4 }, { freq: 329.63, duration: 0.8 },
+            { freq: 261.63, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
+            { freq: 293.66, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
+            { freq: 392.00, duration: 0.4 }, { freq: 349.23, duration: 0.8 }
         ];
 
         function playTone(freq, duration, timeOffset) {
@@ -528,19 +844,15 @@
 
         function scheduleMelody() {
             if(isPlaying) {
-                // 如果已经在播放，先停止当前的再播放新的（停止之前的定时）
                 if(currentTimeout) clearTimeout(currentTimeout);
                 isPlaying = false;
             }
             isPlaying = true;
-            let startTime = audioCtx.currentTime;
             let elapsed = 0;
-            notes.forEach((note, idx) => {
-                const timeOffset = elapsed;
-                playTone(note.freq, note.duration, timeOffset);
+            notes.forEach((note) => {
+                playTone(note.freq, note.duration, elapsed);
                 elapsed += note.duration;
             });
-            // 设置标记结束后重置状态
             const totalDuration = elapsed * 1000;
             currentTimeout = setTimeout(() => {
                 isPlaying = false;
@@ -558,8 +870,6 @@
             }
             isPlaying = false;
             if(audioCtx) {
-                // 不能直接关闭上下文因为会有问题，只是停止旋律安排，但已经发出的声音无法立即停止，但可以新建上下文?简单处理
-                // 为了体验，重新初始化上下文会中断所有声音
                 if(audioCtx.state !== 'closed') {
                     audioCtx.close().then(() => {
                         audioCtx = null;
@@ -569,7 +879,6 @@
             }
             const statusSpan = document.getElementById('musicStatus');
             if(statusSpan) statusSpan.innerHTML = '⏹️ 已停止 · 可重新播放 🎵';
-            // 重新创建上下文准备
             setTimeout(() => {
                 if(statusSpan && statusSpan.innerText.includes('已停止'))
                     statusSpan.innerHTML = '🎵 点击播放生日歌';
@@ -587,7 +896,7 @@
             stopMelody();
         });
 
-        // ---------- 5. 撒花 (彩带/烟花特效) ----------
+        // ========= 6. 撒花特效 ==========
         function createFirework(x, y) {
             for(let i=0; i<24; i++) {
                 const fire = document.createElement('div');
@@ -605,13 +914,11 @@
         }
 
         function launchConfetti() {
-            // 从屏幕各个地方发射小火花
             for(let i=0; i<60; i++) {
                 const randX = Math.random() * window.innerWidth;
                 const randY = Math.random() * window.innerHeight * 0.7 + 50;
                 setTimeout(() => createFirework(randX, randY), i * 30);
             }
-            // 同时生成小气球氛围
             for(let i=0;i<8;i++) setTimeout(() => createRandomBalloon(Math.random() * 95), i*100);
             const msgDiv = document.getElementById('musicStatus');
             if(msgDiv) msgDiv.innerText = '✨ 生日快乐！✨';
@@ -624,7 +931,6 @@
         const confettiBtn = document.getElementById('confettiBtn');
         if(confettiBtn) confettiBtn.addEventListener('click', launchConfetti);
 
-        // 额外的花火: 点击蛋糕图标也可以触发小快乐
         const cakeIcon = document.querySelector('.cake-icon');
         if(cakeIcon) {
             cakeIcon.addEventListener('click', (e) => {
@@ -633,11 +939,6 @@
                 for(let i=0;i<12;i++) setTimeout(() => createRandomBalloon(Math.random() * 95), i*70);
             });
         }
-
-        // 页面自适应布局
-        window.addEventListener('resize', ()=> {});
-        // 页面初次加载简单提醒
-        console.log("🎂 生日祝福可视化页面已启动，可自由编辑祝福和名字！");
     })();
 </script>
 </body>
