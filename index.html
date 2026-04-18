@@ -4,18 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>🎂 生日快乐 | 本地图片个性化祝福</title>
-    <!-- 引入 Google Fonts 优雅字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 (免费图标库) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none; /* 让视觉更干净，不影响文字复制 */
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
         body {
             min-height: 100vh;
             background: linear-gradient(145deg, #fff9f0 0%, #ffe6d5 100%);
@@ -27,8 +19,6 @@
             position: relative;
             overflow-x: hidden;
         }
-
-        /* 动态飘浮气球动画背景 */
         .balloon-container {
             position: fixed;
             top: 0;
@@ -39,7 +29,6 @@
             z-index: 1;
             overflow: hidden;
         }
-
         .balloon {
             position: absolute;
             bottom: -120px;
@@ -51,43 +40,13 @@
             animation: float 9s infinite ease-in;
             opacity: 0.7;
         }
-        .balloon::before {
-            content: "✧";
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 20px;
-            color: #a55d35;
-            text-shadow: 0 0 2px white;
-        }
-        .balloon::after {
-            content: "";
-            position: absolute;
-            bottom: -28px;
-            left: 50%;
-            width: 2px;
-            height: 28px;
-            background: #b87c4f;
-            transform: translateX(-50%);
-        }
-
+        .balloon::before { content: "✧"; position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); font-size: 20px; color: #a55d35; text-shadow: 0 0 2px white; }
+        .balloon::after { content: ""; position: absolute; bottom: -28px; left: 50%; width: 2px; height: 28px; background: #b87c4f; transform: translateX(-50%); }
         @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.5;
-            }
-            50% {
-                transform: translateY(-55vh) rotate(6deg);
-                opacity: 0.9;
-            }
-            100% {
-                transform: translateY(-105vh) rotate(-4deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+            50% { transform: translateY(-55vh) rotate(6deg); opacity: 0.9; }
+            100% { transform: translateY(-105vh) rotate(-4deg); opacity: 0; }
         }
-
-        /* 主卡片 */
         .card {
             position: relative;
             z-index: 20;
@@ -98,24 +57,12 @@
             border-radius: 68px;
             box-shadow: 0 25px 45px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,215,150,0.6);
             overflow: hidden;
-            transition: all 0.3s ease;
             padding: 30px 32px 48px;
             text-align: center;
             font-family: 'Inter', sans-serif;
         }
-
-        /* 装饰头部 */
-        .cake-icon {
-            font-size: 70px;
-            filter: drop-shadow(2px 8px 12px rgba(0,0,0,0.2));
-            margin-bottom: 12px;
-            animation: bounceSoft 2s infinite;
-        }
-        @keyframes bounceSoft {
-            0%,100%{ transform: translateY(0);}
-            50%{ transform: translateY(-8px);}
-        }
-
+        .cake-icon { font-size: 70px; filter: drop-shadow(2px 8px 12px rgba(0,0,0,0.2)); margin-bottom: 12px; animation: bounceSoft 2s infinite; }
+        @keyframes bounceSoft { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-8px);} }
         h1 {
             font-family: 'Playfair Display', serif;
             font-size: 3rem;
@@ -124,398 +71,120 @@
             -webkit-background-clip: text;
             color: transparent;
             margin-bottom: 12px;
-            letter-spacing: -0.5px;
         }
-
-        .sub {
-            font-size: 1.2rem;
-            color: #c26e3c;
-            font-weight: 500;
-            border-bottom: 2px dashed #ffcd94;
-            display: inline-block;
-            padding-bottom: 6px;
-            margin-bottom: 24px;
-        }
-
-        /* ========= 图片上传和展示区域 ========= */
-        .photo-section {
-            background: #fffaf2;
-            border-radius: 48px;
-            padding: 20px 20px 24px;
-            margin: 20px 0 15px;
-            box-shadow: inset 0 0 0 1px #ffe3bc, 0 8px 20px rgba(0,0,0,0.05);
-            transition: all 0.2s;
-        }
-
-        .photo-frame {
-            position: relative;
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 16px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ffdbb5, #ffb87c);
-            padding: 5px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-            transition: transform 0.2s ease;
-            cursor: pointer;
-        }
-
-        .photo-frame:hover {
-            transform: scale(1.02);
-        }
-
-        .photo-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #ffe8d4;
-            border: 3px solid white;
-            box-sizing: border-box;
-        }
-
-        .default-photo-icon {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #ffddb0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #c25d2e;
-            font-size: 3rem;
-            border: 3px solid white;
-        }
-
-        .default-photo-icon i {
-            font-size: 4rem;
-            margin-bottom: 6px;
-        }
-
-        .default-photo-icon span {
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .photo-controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .file-upload-label {
-            background: #f3d9bf;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #5a3519;
-            border: none;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .file-upload-label:hover {
-            background: #ecc896;
-        }
-
-        .reset-photo-btn {
-            background: #f1e2d2;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #7a4a26;
-            transition: 0.2s;
-        }
-
-        .reset-photo-btn:hover {
-            background: #e6cfb5;
-        }
-
-        .photo-hint {
-            font-size: 0.7rem;
-            color: #b87a48;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        /* 可编辑祝福区域 */
-        .blessing-area {
-            background: #fffaf2;
-            border-radius: 48px;
-            padding: 28px 20px;
-            margin: 25px 0;
-            box-shadow: inset 0 0 0 1px #ffe3bc, 0 8px 20px rgba(0,0,0,0.05);
-            transition: all 0.2s;
-        }
-
-        .greeting-text {
-            font-size: 1.7rem;
-            font-weight: 600;
-            line-height: 1.4;
-            color: #5d3a1f;
-            margin-bottom: 20px;
-            word-break: break-word;
-            font-family: 'Playfair Display', serif;
-        }
-
-        /* 可编辑的输入框 & 可视化编辑控件 */
-        .edit-controls {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 15px;
-            margin-bottom: 10px;
-        }
-        .edit-input {
-            flex: 2;
-            min-width: 180px;
-            padding: 12px 18px;
-            border-radius: 60px;
-            border: 1px solid #ffcf9a;
-            background: white;
-            font-size: 1rem;
-            font-family: 'Inter', sans-serif;
-            outline: none;
-            transition: 0.2s;
-        }
-        .edit-input:focus {
-            border-color: #f28b44;
-            box-shadow: 0 0 0 3px rgba(242,139,68,0.2);
-        }
-        .btn {
-            background: #ffb26e;
-            border: none;
-            padding: 0 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #3e2a1c;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-        .btn i {
-            font-size: 1rem;
-        }
-        .btn:hover {
-            background: #ff9f4a;
-            transform: scale(0.97);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-        }
-        .btn-primary {
-            background: #e25c1c;
-            color: white;
-        }
-        .btn-primary:hover {
-            background: #c24509;
-        }
-
-        /* 名字区域可视化编辑 */
-        .name-section {
-            margin: 15px 0 10px;
-        }
-        .birthday-name {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #c95a0f;
-            display: inline-block;
-            background: #fff0e0;
-            padding: 0 20px;
-            border-radius: 60px;
-            letter-spacing: 1px;
-        }
-        .name-edit {
-            margin-top: 12px;
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .name-input {
-            padding: 8px 18px;
-            border-radius: 40px;
-            border: 1px solid #ffbe7a;
-            font-size: 1rem;
-            width: 180px;
-            text-align: center;
-        }
-
-        /* 音乐播放器 (轻量可视化) */
-        .music-player {
-            background: #f8ede1;
-            border-radius: 100px;
-            padding: 8px 20px;
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            margin: 12px 0 18px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .music-btn {
-            background: none;
-            border: none;
-            font-size: 1.6rem;
-            cursor: pointer;
-            color: #d45d1c;
-            transition: 0.1s;
-        }
-        .music-status {
-            font-size: 0.8rem;
-            color: #a5612c;
-        }
-
-        /* 互动按钮组 */
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 28px 0 20px;
-            flex-wrap: wrap;
-        }
-        .surprise-btn {
-            background: #f7d9b5;
-            padding: 10px 22px;
-            border-radius: 40px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        /* 视觉烟花特效 */
-        .firework {
-            position: fixed;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #ffaa66, #ff6a3d);
-            pointer-events: none;
-            z-index: 999;
-            animation: pop 0.6s ease-out forwards;
-        }
-        @keyframes pop {
-            0% { transform: scale(0.2); opacity: 1;}
-            100% { transform: scale(3); opacity: 0;}
-        }
-
-        footer {
-            font-size: 0.7rem;
-            color: #c89a6e;
-            margin-top: 30px;
-        }
-
-        @media (max-width: 550px) {
-            .card { padding: 22px 20px 36px; }
-            .greeting-text { font-size: 1.3rem; }
-            h1 { font-size: 2.2rem; }
-            .photo-frame { width: 140px; height: 140px; }
-        }
+        .sub { font-size: 1.2rem; color: #c26e3c; font-weight: 500; border-bottom: 2px dashed #ffcd94; display: inline-block; padding-bottom: 6px; margin-bottom: 24px; }
+        .photo-section { background: #fffaf2; border-radius: 48px; padding: 20px 20px 24px; margin: 20px 0 15px; box-shadow: inset 0 0 0 1px #ffe3bc, 0 8px 20px rgba(0,0,0,0.05); }
+        .photo-frame { position: relative; width: 180px; height: 180px; margin: 0 auto 16px; border-radius: 50%; background: linear-gradient(135deg, #ffdbb5, #ffb87c); padding: 5px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); transition: transform 0.2s ease; cursor: pointer; }
+        .photo-frame:hover { transform: scale(1.02); }
+        .photo-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #ffe8d4; border: 3px solid white; box-sizing: border-box; }
+        .default-photo-icon { width: 100%; height: 100%; border-radius: 50%; background: #ffddb0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #c25d2e; font-size: 3rem; border: 3px solid white; }
+        .default-photo-icon i { font-size: 4rem; margin-bottom: 6px; }
+        .default-photo-icon span { font-size: 0.8rem; font-weight: 500; }
+        .photo-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
+        .file-upload-label { background: #f3d9bf; padding: 8px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: #5a3519; }
+        .file-upload-label:hover { background: #ecc896; }
+        .reset-photo-btn { background: #f1e2d2; border: none; padding: 8px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: #7a4a26; }
+        .reset-photo-btn:hover { background: #e6cfb5; }
+        .photo-hint { font-size: 0.7rem; color: #b87a48; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .blessing-area { background: #fffaf2; border-radius: 48px; padding: 28px 20px; margin: 25px 0; box-shadow: inset 0 0 0 1px #ffe3bc, 0 8px 20px rgba(0,0,0,0.05); }
+        .greeting-text { font-size: 1.7rem; font-weight: 600; line-height: 1.4; color: #5d3a1f; margin-bottom: 20px; font-family: 'Playfair Display', serif; }
+        .edit-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 15px; }
+        .edit-input { flex: 2; min-width: 180px; padding: 12px 18px; border-radius: 60px; border: 1px solid #ffcf9a; background: white; font-size: 1rem; outline: none; }
+        .edit-input:focus { border-color: #f28b44; box-shadow: 0 0 0 3px rgba(242,139,68,0.2); }
+        .btn { background: #ffb26e; border: none; padding: 0 24px; border-radius: 40px; font-weight: 600; font-size: 0.95rem; color: #3e2a1c; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .btn:hover { background: #ff9f4a; transform: scale(0.97); }
+        .btn-primary { background: #e25c1c; color: white; }
+        .btn-primary:hover { background: #c24509; }
+        .name-section { margin: 15px 0 10px; }
+        .birthday-name { font-size: 2rem; font-weight: 800; color: #c95a0f; display: inline-block; background: #fff0e0; padding: 0 20px; border-radius: 60px; }
+        .name-edit { margin-top: 12px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .name-input { padding: 8px 18px; border-radius: 40px; border: 1px solid #ffbe7a; font-size: 1rem; width: 180px; text-align: center; }
+        .music-player { background: #f8ede1; border-radius: 100px; padding: 8px 20px; display: inline-flex; align-items: center; gap: 14px; margin: 12px 0 18px; }
+        .music-btn { background: none; border: none; font-size: 1.6rem; cursor: pointer; color: #d45d1c; }
+        .music-status { font-size: 0.8rem; color: #a5612c; }
+        .action-buttons { display: flex; justify-content: center; gap: 20px; margin: 28px 0 20px; flex-wrap: wrap; }
+        .surprise-btn { background: #f7d9b5; padding: 10px 22px; border-radius: 40px; font-weight: 600; }
+        .firework { position: fixed; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle, #ffaa66, #ff6a3d); pointer-events: none; z-index: 999; animation: pop 0.6s ease-out forwards; }
+        @keyframes pop { 0% { transform: scale(0.2); opacity: 1;} 100% { transform: scale(3); opacity: 0;} }
+        footer { font-size: 0.7rem; color: #c89a6e; margin-top: 30px; }
+        .copy-link-btn { background: #e8d5c0; border: none; padding: 6px 16px; border-radius: 30px; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; }
+        .copy-link-btn:hover { background: #ddc8ae; }
+        @media (max-width: 550px) { .card { padding: 22px 20px 36px; } .greeting-text { font-size: 1.3rem; } h1 { font-size: 2.2rem; } .photo-frame { width: 140px; height: 140px; } }
     </style>
 </head>
 <body>
 
-<!-- 动态气球画布 -->
 <div class="balloon-container" id="balloonContainer"></div>
 
 <main class="card">
-    <div class="cake-icon">
-        🎂✨
-    </div>
+    <div class="cake-icon">🎂✨</div>
     <h1>生日快乐</h1>
     <div class="sub">· 专属祝福时刻 ·</div>
 
-    <!-- 照片上传和展示区域 - 支持本地默认图片 -->
     <div class="photo-section">
         <div class="photo-frame" id="photoFrame">
             <div id="photoContainer">
-                <!-- 初始会通过JS加载本地默认图片，如果未配置则显示默认图标 -->
-                <div class="default-photo-icon">
-                    <i class="fas fa-camera-retro"></i>
-                    <span>加载中...</span>
-                </div>
+                <div class="default-photo-icon"><i class="fas fa-camera-retro"></i><span>加载中...</span></div>
             </div>
         </div>
         <div class="photo-controls">
-            <label class="file-upload-label" for="photoUpload">
-                <i class="fas fa-upload"></i> 上传图片
-            </label>
+            <label class="file-upload-label" for="photoUpload"><i class="fas fa-upload"></i> 上传图片</label>
             <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" style="display: none;">
             <button id="resetPhotoBtn" class="reset-photo-btn"><i class="fas fa-undo-alt"></i> 重置默认</button>
         </div>
-        <div class="photo-hint">
-            <i class="fas fa-mouse-pointer"></i> 点击图片更换 · 支持 JPG/PNG
-        </div>
+        <div class="photo-hint"><i class="fas fa-mouse-pointer"></i> 点击图片更换 · 支持 JPG/PNG</div>
     </div>
 
-    <!-- 受祝福人姓名 (可视化编辑 + 自动保存) -->
     <div class="name-section">
         <div class="birthday-name" id="displayName">🌟 代梦茹 🌟</div>
         <div class="name-edit">
             <input type="text" id="nameInput" class="name-input" placeholder="输入寿星名字" value="代梦茹">
             <button id="updateNameBtn" class="btn"><i class="fas fa-pen-alt"></i> 更改名字</button>
+            <button id="copyLinkBtn" class="copy-link-btn"><i class="fas fa-link"></i> 复制分享链接</button>
         </div>
         <div style="font-size: 0.7rem; color:#b87a48; margin-top: 6px;">
-            <i class="fas fa-save"></i> 名字会自动保存，下次打开依旧是它
+            <i class="fas fa-globe"></i> 更改名字后点击「复制分享链接」，发给朋友即可看到同样的名字！
         </div>
     </div>
 
-    <!-- 可视化编辑祝福语核心区 -->
     <div class="blessing-area">
-        <div class="greeting-text" id="greetingMessage">
-            🎈 愿你的每一天都如糖果般甜蜜，<br>
-            愿你的每一岁都绽放光芒！<br>
-            生日快乐，万事胜意 🎉
-        </div>
+        <div class="greeting-text" id="greetingMessage">🎈 愿你的每一天都如糖果般甜蜜，<br>愿你的每一岁都绽放光芒！<br>生日快乐，万事胜意 🎉</div>
         <div class="edit-controls">
             <input type="text" id="editGreetingInput" class="edit-input" placeholder="输入新的祝福语..." value="🎈 愿你的每一天都如糖果般甜蜜，愿你的每一岁都绽放光芒！生日快乐，万事胜意 🎉">
             <button id="updateGreetingBtn" class="btn btn-primary"><i class="fas fa-magic"></i> 更新祝福</button>
         </div>
-        <div style="font-size: 0.75rem; color:#b87a48; margin-top: 8px;">
-            <i class="fas fa-edit"></i> 试试编辑上方文字，实时改变祝福内容！
-        </div>
     </div>
 
-    <!-- 轻量音乐播放器 -->
     <div class="music-player">
         <button id="playMusicBtn" class="music-btn"><i class="fas fa-play-circle"></i></button>
         <button id="stopMusicBtn" class="music-btn"><i class="fas fa-stop-circle"></i></button>
         <span class="music-status" id="musicStatus">🎵 点击播放生日歌</span>
     </div>
 
-    <!-- 互动惊喜按钮组 -->
     <div class="action-buttons">
         <button id="confettiBtn" class="btn surprise-btn"><i class="fas fa-glass-cheers"></i> 撒花🎉</button>
         <button id="balloonBtn" class="btn surprise-btn"><i class="fas fa-birthday-cake"></i> 增加气球🎈</button>
     </div>
 
-    <footer>
-        🌟 祝您拥有最美妙的一天 🌟 <br>
-        可视化编辑 · 本地图片预设 | 上传照片定格美好
-    </footer>
+    <footer>🌟 祝您拥有最美妙的一天 🌟<br>分享链接 · 名字同步显示</footer>
 </main>
 
 <script>
     (function() {
+        // ========= URL 参数管理（核心：实现名字跨用户保存）=========
+        // 获取 URL 参数
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // 更新 URL 参数（不刷新页面）
+        function updateUrlParameter(name, value) {
+            const url = new URL(window.location.href);
+            url.searchParams.set(name, encodeURIComponent(value));
+            window.history.pushState({}, '', url);
+        }
+
         // ========= 1. 动态气球系统 ==========
         const balloonContainer = document.getElementById('balloonContainer');
         function createRandomBalloon(leftPos = null) {
@@ -533,27 +202,17 @@
             balloon.style.animationDuration = `${duration}s`;
             balloon.style.animationDelay = `${Math.random() * 5}s`;
             balloonContainer.appendChild(balloon);
-            balloon.addEventListener('animationend', () => {
-                balloon.remove();
-            });
+            balloon.addEventListener('animationend', () => { balloon.remove(); });
             return balloon;
         }
 
-        for(let i = 0; i < 22; i++) {
-            setTimeout(() => createRandomBalloon(Math.random() * 95), i * 300);
-        }
-        setInterval(() => {
-            if(balloonContainer.children.length < 40) {
-                createRandomBalloon();
-            }
-        }, 2800);
+        for(let i = 0; i < 22; i++) setTimeout(() => createRandomBalloon(Math.random() * 95), i * 300);
+        setInterval(() => { if(balloonContainer.children.length < 40) createRandomBalloon(); }, 2800);
 
         const balloonBtn = document.getElementById('balloonBtn');
         if(balloonBtn) {
             balloonBtn.addEventListener('click', () => {
-                for(let i=0; i<6; i++) {
-                    setTimeout(() => createRandomBalloon(Math.random() * 90), i * 80);
-                }
+                for(let i=0; i<6; i++) setTimeout(() => createRandomBalloon(Math.random() * 90), i * 80);
                 const statusDiv = document.getElementById('musicStatus');
                 if(statusDiv) statusDiv.innerText = '🎈 新气球飘起来啦!';
                 setTimeout(() => {
@@ -570,10 +229,7 @@
 
         function updateGreetingText() {
             let newText = editGreetingInput.value.trim();
-            if(newText === "") {
-                newText = "🎂 祝你生日快乐，每天都充满笑容！🎂";
-                editGreetingInput.value = newText;
-            }
+            if(newText === "") { newText = "🎂 祝你生日快乐，每天都充满笑容！🎂"; editGreetingInput.value = newText; }
             const formatted = newText.replace(/\n/g, '<br>');
             greetingDiv.innerHTML = formatted;
             greetingDiv.style.transform = "scale(1.02)";
@@ -582,298 +238,158 @@
         updateGreetingBtn.addEventListener('click', updateGreetingText);
         editGreetingInput.value = "🎈 愿你的每一天都如糖果般甜蜜，愿你的每一岁都绽放光芒！生日快乐，万事胜意 🎉";
         updateGreetingText();
-        editGreetingInput.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') {
-                e.preventDefault();
-                updateGreetingText();
-            }
-        });
+        editGreetingInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') { e.preventDefault(); updateGreetingText(); } });
 
-        // ========= 3. 名字可视化编辑 + 自动保存功能 (localStorage) ==========
+        // ========= 3. 名字可视化编辑 + URL 参数同步（关键修改）=========
         const displayNameSpan = document.getElementById('displayName');
         const nameInput = document.getElementById('nameInput');
         const updateNameBtn = document.getElementById('updateNameBtn');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
 
-        // 定义保存名字到本地存储的函数
-        function saveNameToLocalStorage(name) {
-            try {
-                localStorage.setItem('birthday_person_name', name);
-                console.log('✅ 名字已保存到本地:', name);
-            } catch(e) {
-                console.warn('保存名字失败:', e);
-            }
-        }
-
-        // 定义从本地存储读取名字的函数
-        function loadNameFromLocalStorage() {
-            try {
-                const savedName = localStorage.getItem('birthday_person_name');
-                if (savedName && savedName.trim() !== "") {
-                    return savedName.trim();
-                }
-            } catch(e) {
-                console.warn('读取保存的名字失败:', e);
-            }
-            return null; // 没有保存过
-        }
-
-        // 更新显示名字（同时保存到本地）
-        function updateDisplayNameAndSave() {
+        // 更新显示名字 + 同步 URL 参数
+        function updateDisplayNameAndUrl() {
             let newName = nameInput.value.trim();
-            if(newName === "") {
-                newName = "🌟 特别的你 🌟";
-                nameInput.value = newName;
-            }
+            if(newName === "") { newName = "🌟 特别的你 🌟"; nameInput.value = newName; }
             // 更新显示
             displayNameSpan.innerHTML = `🎂 ${newName} 🎂`;
-            // 保存到本地存储
-            saveNameToLocalStorage(newName);
-            // 添加一个视觉反馈提示
-            const hintSpan = document.querySelector('.name-section .fa-save')?.parentElement;
-            if(hintSpan) {
-                const originalText = hintSpan.innerHTML;
-                hintSpan.innerHTML = '<i class="fas fa-check-circle"></i> 名字已自动保存！';
-                setTimeout(() => {
-                    if(hintSpan) hintSpan.innerHTML = originalText;
-                }, 1500);
-            }
+            // 更新 URL 参数（核心：让链接包含名字）
+            updateUrlParameter('name', newName);
+            // 显示保存成功提示
+            showToast('✅ 名字已保存到链接中！点击「复制分享链接」发送给朋友');
         }
 
-        // 初始化名字：优先使用本地存储的值，否则使用默认值
-        function initializeName() {
-            const savedName = loadNameFromLocalStorage();
-            if (savedName) {
-                // 使用保存的名字
-                nameInput.value = savedName;
-                displayNameSpan.innerHTML = `🎂 ${savedName} 🎂`;
-                console.log('📀 已加载保存的名字:', savedName);
-            } else {
-                // 没有保存过，使用默认值 "代梦茹"
-                const defaultName = "代梦茹";
-                nameInput.value = defaultName;
-                displayNameSpan.innerHTML = `🎂 ${defaultName} 🎂`;
-                // 顺便保存一下默认值，便于下次
-                saveNameToLocalStorage(defaultName);
+        // 从 URL 读取名字并初始化
+        function initializeNameFromUrl() {
+            const urlName = getUrlParameter('name');
+            if (urlName && urlName.trim() !== "") {
+                const decodedName = decodeURIComponent(urlName);
+                nameInput.value = decodedName;
+                displayNameSpan.innerHTML = `🎂 ${decodedName} 🎂`;
+                console.log('📀 从链接加载名字:', decodedName);
+                return true;
             }
+            return false;
         }
 
-        // 绑定更改名字按钮事件
-        updateNameBtn.addEventListener('click', updateDisplayNameAndSave);
-        // 按回车也保存
-        nameInput.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') {
-                e.preventDefault();
-                updateDisplayNameAndSave();
-            }
-        });
+        // 复制分享链接
+        function copyShareLink() {
+            const currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                showToast('🔗 链接已复制！发给朋友，他们打开就能看到相同的名字');
+            }).catch(() => {
+                alert('复制失败，请手动复制地址栏链接');
+            });
+        }
 
-        // 执行名字初始化
-        initializeName();
+        // 简单提示
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#5d3a1f;color:#fff9f0;padding:12px 24px;border-radius:50px;font-size:14px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);white-space:nowrap;';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
 
-        // ========= 4. 图片功能增强：支持本地默认图片预加载 ==========
+        // 绑定事件
+        updateNameBtn.addEventListener('click', updateDisplayNameAndUrl);
+        nameInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') { e.preventDefault(); updateDisplayNameAndUrl(); } });
+        copyLinkBtn.addEventListener('click', copyShareLink);
+
+        // 初始化：优先使用 URL 参数中的名字
+        const hasUrlName = initializeNameFromUrl();
+        if (!hasUrlName) {
+            // 没有 URL 参数时使用默认值，并将默认值写入 URL
+            const defaultName = "代梦茹";
+            nameInput.value = defaultName;
+            displayNameSpan.innerHTML = `🎂 ${defaultName} 🎂`;
+            updateUrlParameter('name', defaultName);
+        }
+
+        // ========= 4. 图片功能 ==========
         const photoUploadInput = document.getElementById('photoUpload');
         const photoContainer = document.getElementById('photoContainer');
         const resetPhotoBtn = document.getElementById('resetPhotoBtn');
         const photoFrame = document.getElementById('photoFrame');
 
-        let isCustomImage = false;      // 是否用户自定义图片（非默认本地图片）
-        let currentImageUrl = null;     // 当前图片URL (blob或dataURL或本地路径)
-        let defaultLocalImagePath = null; // 存储用户配置的本地默认图片路径
+        let isCustomImage = false;
+        let currentImageUrl = null;
+        let defaultLocalImagePath = null;
 
-        // 显示图片的核心函数（统一渲染img标签）
         function displayImage(imageUrl, isLocalDefault = false) {
-            // 清空容器，创建img元素
             photoContainer.innerHTML = '';
             const img = document.createElement('img');
             img.src = imageUrl;
             img.alt = "生日照片";
             img.className = "photo-img";
-            img.style.width = "100%";
-            img.style.height = "100%";
-            img.style.objectFit = "cover";
-            img.style.borderRadius = "50%";
-            // 添加错误处理：如果图片加载失败，回退到默认图标
+            img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%;";
             img.onerror = () => {
-                console.warn("图片加载失败，回退至默认图标:", imageUrl);
-                if (!isLocalDefault) {
-                    // 如果当前加载的不是本地预设图片，尝试加载本地预设
-                    if (defaultLocalImagePath) {
-                        setDefaultLocalImage(defaultLocalImagePath);
-                    } else {
-                        resetToDefaultIcon();
-                    }
-                } else {
-                    resetToDefaultIcon();
-                }
+                console.warn("图片加载失败:", imageUrl);
+                if (!isLocalDefault && defaultLocalImagePath) setDefaultLocalImage(defaultLocalImagePath);
+                else resetToDefaultIcon();
             };
             photoContainer.appendChild(img);
-            isCustomImage = !isLocalDefault;  // 如果是本地预设图片不算用户自定义
+            isCustomImage = !isLocalDefault;
             currentImageUrl = imageUrl;
         }
 
-        // 重置为默认图标 (相机图标)
         function resetToDefaultIcon() {
-            if (currentImageUrl && currentImageUrl.startsWith('blob:')) {
-                URL.revokeObjectURL(currentImageUrl);
-            }
-            photoContainer.innerHTML = `
-                <div class="default-photo-icon">
-                    <i class="fas fa-camera-retro"></i>
-                    <span>上传照片</span>
-                </div>
-            `;
-            // 确保样式正确
+            if (currentImageUrl && currentImageUrl.startsWith('blob:')) URL.revokeObjectURL(currentImageUrl);
+            photoContainer.innerHTML = `<div class="default-photo-icon"><i class="fas fa-camera-retro"></i><span>上传照片</span></div>`;
             const defaultDiv = photoContainer.querySelector('.default-photo-icon');
-            if (defaultDiv) {
-                defaultDiv.style.width = "100%";
-                defaultDiv.style.height = "100%";
-                defaultDiv.style.display = "flex";
-                defaultDiv.style.flexDirection = "column";
-                defaultDiv.style.alignItems = "center";
-                defaultDiv.style.justifyContent = "center";
-            }
+            if (defaultDiv) { defaultDiv.style.cssText = "width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"; }
             isCustomImage = false;
             currentImageUrl = null;
         }
 
-        // 设置本地默认图片 (方法三核心API)
         function setDefaultLocalImage(imagePath) {
-            if (!imagePath || typeof imagePath !== 'string') {
-                console.warn("无效的图片路径，保留原有默认图标");
-                resetToDefaultIcon();
-                return;
-            }
+            if (!imagePath) { resetToDefaultIcon(); return; }
             defaultLocalImagePath = imagePath;
-            // 尝试加载本地图片，并标记为本地默认图片
             const testImg = new Image();
-            testImg.onload = () => {
-                displayImage(imagePath, true);
-                console.log(`✅ 本地默认图片加载成功: ${imagePath}`);
-            };
-            testImg.onerror = () => {
-                console.warn(`⚠️ 本地默认图片不存在或无法加载: ${imagePath}，使用默认相机图标。请将图片放在正确路径。`);
-                resetToDefaultIcon();
-            };
+            testImg.onload = () => displayImage(imagePath, true);
+            testImg.onerror = () => resetToDefaultIcon();
             testImg.src = imagePath;
         }
 
-        // 处理用户上传的图片文件
         function handleImageFile(file) {
-            if (!file) return;
-            if (!file.type.startsWith('image/')) {
-                alert('请选择图片文件 (JPG, PNG, GIF, WEBP 等)');
-                return;
-            }
-            if (file.size > 5 * 1024 * 1024) {
-                alert('图片大小不能超过 5MB，请压缩后再上传');
-                return;
-            }
+            if (!file || !file.type.startsWith('image/')) { alert('请选择图片文件'); return; }
+            if (file.size > 5 * 1024 * 1024) { alert('图片大小不能超过 5MB'); return; }
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageUrl = e.target.result;
-                // 如果之前有 blob 或 objectURL 且是自定义的，释放内存
-                if (currentImageUrl && currentImageUrl.startsWith('blob:') && !currentImageUrl.startsWith('blob:null')) {
-                    URL.revokeObjectURL(currentImageUrl);
-                }
-                displayImage(imageUrl, false);
-                // 小动画反馈
+            reader.onload = (e) => {
+                if (currentImageUrl && currentImageUrl.startsWith('blob:')) URL.revokeObjectURL(currentImageUrl);
+                displayImage(e.target.result, false);
                 const frame = document.querySelector('.photo-frame');
                 frame.style.transform = "scale(1.05)";
                 setTimeout(() => { frame.style.transform = ""; }, 200);
-                const hintDiv = document.querySelector('.photo-hint');
-                const originalHint = hintDiv.innerHTML;
-                hintDiv.innerHTML = '<i class="fas fa-check-circle"></i> 照片已更换！🎉';
-                setTimeout(() => {
-                    if(hintDiv) hintDiv.innerHTML = originalHint;
-                }, 2000);
             };
             reader.readAsDataURL(file);
         }
 
-        // 重置为预设的本地默认图片（如果设置了的话），否则回退到默认相机图标
         function resetToConfiguredDefault() {
             if (defaultLocalImagePath) {
-                // 如果有配置本地默认图片，重新加载本地默认图片
                 const testImg = new Image();
-                testImg.onload = () => {
-                    displayImage(defaultLocalImagePath, true);
-                    const hintDiv = document.querySelector('.photo-hint');
-                    const originalHint = hintDiv.innerHTML;
-                    hintDiv.innerHTML = '<i class="fas fa-undo-alt"></i> 已恢复本地预设图片';
-                    setTimeout(() => {
-                        if(hintDiv) hintDiv.innerHTML = originalHint;
-                    }, 1800);
-                };
-                testImg.onerror = () => {
-                    resetToDefaultIcon();
-                    const hintDiv = document.querySelector('.photo-hint');
-                    const originalHint = hintDiv.innerHTML;
-                    hintDiv.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 本地图片丢失，已重置为图标';
-                    setTimeout(() => {
-                        if(hintDiv) hintDiv.innerHTML = originalHint;
-                    }, 1800);
-                };
+                testImg.onload = () => displayImage(defaultLocalImagePath, true);
+                testImg.onerror = () => resetToDefaultIcon();
                 testImg.src = defaultLocalImagePath;
-            } else {
-                resetToDefaultIcon();
-                const hintDiv = document.querySelector('.photo-hint');
-                const originalHint = hintDiv.innerHTML;
-                hintDiv.innerHTML = '<i class="fas fa-info-circle"></i> 未配置本地默认图片，已重置为图标';
-                setTimeout(() => {
-                    if(hintDiv) hintDiv.innerHTML = originalHint;
-                }, 1800);
-            }
+            } else resetToDefaultIcon();
         }
 
-        // 监听文件选择
-        photoUploadInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                handleImageFile(file);
-            }
-            photoUploadInput.value = '';
-        });
+        photoUploadInput.addEventListener('change', (e) => { if(e.target.files[0]) handleImageFile(e.target.files[0]); photoUploadInput.value = ''; });
+        if(photoFrame) photoFrame.addEventListener('click', (e) => { if(e.target !== resetPhotoBtn && !resetPhotoBtn.contains(e.target)) photoUploadInput.click(); });
+        resetPhotoBtn.addEventListener('click', (e) => { e.stopPropagation(); resetToConfiguredDefault(); });
 
-        // 点击图片框也可以触发上传
-        if(photoFrame) {
-            photoFrame.addEventListener('click', (e) => {
-                if(e.target === resetPhotoBtn || resetPhotoBtn.contains(e.target)) return;
-                photoUploadInput.click();
-            });
-        }
-
-        // 重置照片按钮：重置到配置的本地默认图片（方法三行为）
-        resetPhotoBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            resetToConfiguredDefault();
-        });
-
-        // ========= 关键：在此处配置您的本地默认图片路径（方法三）=========
         const YOUR_LOCAL_DEFAULT_IMAGE = "http://tdp4pmnhp.hd-bkt.clouddn.com/2e2e26d73c646dc46e132d5437109268.jpg?e=1776526508&token=uXxC-uRUnmNEaCgKKKFIXDA98N8VKx9SSsBnFPFJ:gozwOfyxAQ41OzRR2t1QceW6rbM=";
-
-        // 初始化：尝试加载本地默认图片 (如果路径无效会自动降级为相机图标)
         setDefaultLocalImage(YOUR_LOCAL_DEFAULT_IMAGE);
 
-        // 释放资源
-        window.addEventListener('beforeunload', () => {
-            if(currentImageUrl && currentImageUrl.startsWith('blob:')) {
-                URL.revokeObjectURL(currentImageUrl);
-            }
-        });
+        window.addEventListener('beforeunload', () => { if(currentImageUrl && currentImageUrl.startsWith('blob:')) URL.revokeObjectURL(currentImageUrl); });
 
-        // ========= 5. 音乐播放器 (生日歌) ==========
-        let audioCtx = null;
-        let isPlaying = false;
-        let currentTimeout = null;
+        // ========= 5. 音乐播放器 ==========
+        let audioCtx = null, isPlaying = false, currentTimeout = null;
         const notes = [
-            { freq: 261.63, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
-            { freq: 293.66, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
-            { freq: 349.23, duration: 0.4 }, { freq: 329.63, duration: 0.8 },
-            { freq: 261.63, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
-            { freq: 293.66, duration: 0.4 }, { freq: 261.63, duration: 0.4 },
-            { freq: 392.00, duration: 0.4 }, { freq: 349.23, duration: 0.8 }
+            { freq: 261.63, duration: 0.4 }, { freq: 261.63, duration: 0.4 }, { freq: 293.66, duration: 0.4 },
+            { freq: 261.63, duration: 0.4 }, { freq: 349.23, duration: 0.4 }, { freq: 329.63, duration: 0.8 },
+            { freq: 261.63, duration: 0.4 }, { freq: 261.63, duration: 0.4 }, { freq: 293.66, duration: 0.4 },
+            { freq: 261.63, duration: 0.4 }, { freq: 392.00, duration: 0.4 }, { freq: 349.23, duration: 0.8 }
         ];
-
         function playTone(freq, duration, timeOffset) {
             if (!audioCtx) return;
             const now = audioCtx.currentTime + timeOffset;
@@ -888,73 +404,28 @@
             osc.start(now);
             osc.stop(now + duration);
         }
-
         function playBirthdayMelody() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume().then(() => {
-                    scheduleMelody();
-                }).catch(e=>console.log);
-            } else {
-                scheduleMelody();
-            }
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume().then(() => scheduleMelody()).catch(e=>console.log);
+            else scheduleMelody();
         }
-
         function scheduleMelody() {
-            if(isPlaying) {
-                if(currentTimeout) clearTimeout(currentTimeout);
-                isPlaying = false;
-            }
+            if(isPlaying) { if(currentTimeout) clearTimeout(currentTimeout); isPlaying = false; }
             isPlaying = true;
             let elapsed = 0;
-            notes.forEach((note) => {
-                playTone(note.freq, note.duration, elapsed);
-                elapsed += note.duration;
-            });
-            const totalDuration = elapsed * 1000;
-            currentTimeout = setTimeout(() => {
-                isPlaying = false;
-                const statusSpan = document.getElementById('musicStatus');
-                if(statusSpan) statusSpan.innerHTML = '🎵 播放完成，再次点击重放 🎵';
-            }, totalDuration);
-            const statusSpan = document.getElementById('musicStatus');
-            if(statusSpan) statusSpan.innerHTML = '🎶 生日歌正在播放 🎶';
+            notes.forEach(note => { playTone(note.freq, note.duration, elapsed); elapsed += note.duration; });
+            currentTimeout = setTimeout(() => { isPlaying = false; document.getElementById('musicStatus').innerHTML = '🎵 播放完成，再次点击重放 🎵'; }, elapsed * 1000);
+            document.getElementById('musicStatus').innerHTML = '🎶 生日歌正在播放 🎶';
         }
-
         function stopMelody() {
-            if(currentTimeout) {
-                clearTimeout(currentTimeout);
-                currentTimeout = null;
-            }
+            if(currentTimeout) clearTimeout(currentTimeout);
             isPlaying = false;
-            if(audioCtx) {
-                if(audioCtx.state !== 'closed') {
-                    audioCtx.close().then(() => {
-                        audioCtx = null;
-                    }).catch(e=>{});
-                }
-                audioCtx = null;
-            }
-            const statusSpan = document.getElementById('musicStatus');
-            if(statusSpan) statusSpan.innerHTML = '⏹️ 已停止 · 可重新播放 🎵';
-            setTimeout(() => {
-                if(statusSpan && statusSpan.innerText.includes('已停止'))
-                    statusSpan.innerHTML = '🎵 点击播放生日歌';
-            }, 1800);
+            if(audioCtx) { audioCtx.close().then(() => { audioCtx = null; }).catch(e=>{}); audioCtx = null; }
+            document.getElementById('musicStatus').innerHTML = '⏹️ 已停止 · 可重新播放 🎵';
+            setTimeout(() => { if(document.getElementById('musicStatus').innerText.includes('已停止')) document.getElementById('musicStatus').innerHTML = '🎵 点击播放生日歌'; }, 1800);
         }
-
-        const playBtn = document.getElementById('playMusicBtn');
-        const stopBtn = document.getElementById('stopMusicBtn');
-        playBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            playBirthdayMelody();
-        });
-        stopBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            stopMelody();
-        });
+        document.getElementById('playMusicBtn').addEventListener('click', playBirthdayMelody);
+        document.getElementById('stopMusicBtn').addEventListener('click', stopMelody);
 
         // ========= 6. 撒花特效 ==========
         function createFirework(x, y) {
@@ -963,42 +434,25 @@
                 fire.classList.add('firework');
                 const angle = Math.random() * Math.PI * 2;
                 const rad = 10 + Math.random() * 50;
-                const offX = Math.cos(angle) * rad;
-                const offY = Math.sin(angle) * rad;
-                fire.style.left = (x + offX) + 'px';
-                fire.style.top = (y + offY) + 'px';
+                fire.style.left = (x + Math.cos(angle) * rad) + 'px';
+                fire.style.top = (y + Math.sin(angle) * rad) + 'px';
                 fire.style.background = `hsl(${Math.random() * 360}, 80%, 65%)`;
                 document.body.appendChild(fire);
                 setTimeout(() => fire.remove(), 600);
             }
         }
-
         function launchConfetti() {
-            for(let i=0; i<60; i++) {
-                const randX = Math.random() * window.innerWidth;
-                const randY = Math.random() * window.innerHeight * 0.7 + 50;
-                setTimeout(() => createFirework(randX, randY), i * 30);
-            }
+            for(let i=0; i<60; i++) setTimeout(() => createFirework(Math.random() * window.innerWidth, Math.random() * window.innerHeight * 0.7 + 50), i * 30);
             for(let i=0;i<8;i++) setTimeout(() => createRandomBalloon(Math.random() * 95), i*100);
-            const msgDiv = document.getElementById('musicStatus');
-            if(msgDiv) msgDiv.innerText = '✨ 生日快乐！✨';
-            setTimeout(()=>{
-                if(msgDiv && msgDiv.innerText.includes('生日快乐'))
-                    if(!isPlaying) msgDiv.innerText = '🎵 点击播放生日歌';
-            }, 2500);
+            document.getElementById('musicStatus').innerText = '✨ 生日快乐！✨';
+            setTimeout(() => { if(!isPlaying) document.getElementById('musicStatus').innerText = '🎵 点击播放生日歌'; }, 2500);
         }
-
-        const confettiBtn = document.getElementById('confettiBtn');
-        if(confettiBtn) confettiBtn.addEventListener('click', launchConfetti);
-
-        const cakeIcon = document.querySelector('.cake-icon');
-        if(cakeIcon) {
-            cakeIcon.addEventListener('click', (e) => {
-                const rect = cakeIcon.getBoundingClientRect();
-                createFirework(rect.left + rect.width/2, rect.top + rect.height/2);
-                for(let i=0;i<12;i++) setTimeout(() => createRandomBalloon(Math.random() * 95), i*70);
-            });
-        }
+        document.getElementById('confettiBtn').addEventListener('click', launchConfetti);
+        document.querySelector('.cake-icon').addEventListener('click', (e) => {
+            const rect = e.target.getBoundingClientRect();
+            createFirework(rect.left + rect.width/2, rect.top + rect.height/2);
+            for(let i=0;i<12;i++) setTimeout(() => createRandomBalloon(Math.random() * 95), i*70);
+        });
     })();
 </script>
 </body>
