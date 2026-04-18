@@ -107,9 +107,12 @@
         .firework { position: fixed; width: 6px; height: 6px; border-radius: 50%; background: radial-gradient(circle, #ffaa66, #ff6a3d); pointer-events: none; z-index: 999; animation: pop 0.6s ease-out forwards; }
         @keyframes pop { 0% { transform: scale(0.2); opacity: 1;} 100% { transform: scale(3); opacity: 0;} }
         footer { font-size: 0.7rem; color: #c89a6e; margin-top: 30px; }
-        .copy-link-btn { background: #e8d5c0; border: none; padding: 6px 16px; border-radius: 30px; font-size: 0.75rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; }
-        .copy-link-btn:hover { background: #ddc8ae; }
-        .link-warning { font-size: 0.7rem; color: #c26e3c; margin-top: 8px; padding: 6px 12px; background: #fff0e0; border-radius: 30px; display: inline-block; }
+        .share-buttons { display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: wrap; }
+        .export-btn { background: #4a7c59; color: white; border: none; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .export-btn:hover { background: #3a6346; }
+        .import-btn { background: #5a6e8a; color: white; border: none; padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .import-btn:hover { background: #4a5a72; }
+        .share-info { font-size: 0.7rem; color: #c26e3c; margin-top: 12px; padding: 8px; background: #fff0e0; border-radius: 30px; }
         @media (max-width: 550px) { .card { padding: 22px 20px 36px; } .greeting-text { font-size: 1.3rem; } h1 { font-size: 2.2rem; } .photo-frame { width: 140px; height: 140px; } }
     </style>
 </head>
@@ -125,16 +128,13 @@
     <div class="photo-section">
         <div class="photo-frame" id="photoFrame">
             <div id="photoContainer">
-                <div class="default-photo-icon"><i class="fas fa-camera-retro"></i><span>加载中...</span></div>
+                <div class="default-photo-icon"><i class="fas fa-camera-retro"></i><span>上传照片</span></div>
             </div>
         </div>
         <div class="photo-controls">
             <label class="file-upload-label" for="photoUpload"><i class="fas fa-upload"></i> 上传图片</label>
             <input type="file" id="photoUpload" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp" style="display: none;">
             <button id="resetPhotoBtn" class="reset-photo-btn"><i class="fas fa-undo-alt"></i> 重置默认</button>
-        </div>
-        <div class="photo-hint">
-            <i class="fas fa-mouse-pointer"></i> 点击图片更换 · 图片会自动保存到链接中
         </div>
     </div>
 
@@ -143,10 +143,6 @@
         <div class="name-edit">
             <input type="text" id="nameInput" class="name-input" placeholder="输入寿星名字" value="代梦茹">
             <button id="updateNameBtn" class="btn"><i class="fas fa-pen-alt"></i> 更改名字</button>
-            <button id="copyLinkBtn" class="copy-link-btn"><i class="fas fa-link"></i> 复制分享链接</button>
-        </div>
-        <div class="link-warning">
-            <i class="fas fa-info-circle"></i> 图片会保存在链接中，复制链接发给朋友即可看到相同图片
         </div>
     </div>
 
@@ -169,65 +165,21 @@
         <button id="balloonBtn" class="btn surprise-btn"><i class="fas fa-birthday-cake"></i> 增加气球🎈</button>
     </div>
 
-    <footer>🌟 祝您拥有最美妙的一天 🌟<br>上传图片后点击「复制分享链接」永久保存</footer>
+    <!-- 分享区域：导出/导入配置文件 -->
+    <div class="share-buttons">
+        <button id="exportConfigBtn" class="export-btn"><i class="fas fa-download"></i> 📦 导出祝福配置</button>
+        <label class="import-btn" for="importFileInput"><i class="fas fa-upload"></i> 📂 导入祝福配置</label>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+    </div>
+    <div class="share-info">
+        <i class="fas fa-info-circle"></i> 点击「导出配置」保存文件，发给朋友后让对方「导入配置」即可看到相同的图片和祝福！
+    </div>
+
+    <footer>🌟 祝您拥有最美妙的一天 🌟<br>导出配置文件分享，图片永久保存</footer>
 </main>
 
 <script>
     (function() {
-        // ========= URL 参数管理 ==========
-        function getUrlParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        function updateUrlParameter(name, value) {
-            const url = new URL(window.location.href);
-            if (value && value !== "") {
-                url.searchParams.set(name, encodeURIComponent(value));
-            } else {
-                url.searchParams.delete(name);
-            }
-            window.history.pushState({}, '', url);
-        }
-
-        // 压缩图片为 JPEG（质量0.7，减少 URL 长度）
-        function compressImageToBase64(file, maxWidth = 800, quality = 0.7) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > maxWidth) {
-                            height = (height * maxWidth) / width;
-                            width = maxWidth;
-                        }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        const base64 = canvas.toDataURL('image/jpeg', quality);
-                        resolve(base64);
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // 显示提示
-        function showToast(msg, isError = false) {
-            const toast = document.createElement('div');
-            toast.style.cssText = `position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:${isError ? '#c24509' : '#5d3a1f'};color:#fff9f0;padding:12px 24px;border-radius:50px;font-size:14px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);white-space:nowrap;max-width:90%;white-space:normal;text-align:center;`;
-            toast.innerText = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
         // ========= 1. 动态气球系统 ==========
         const balloonContainer = document.getElementById('balloonContainer');
         function createRandomBalloon(leftPos = null) {
@@ -265,7 +217,7 @@
             });
         }
 
-        // ========= 2. 祝福语可视化编辑 ==========
+        // ========= 2. 祝福语 ==========
         const greetingDiv = document.getElementById('greetingMessage');
         const editGreetingInput = document.getElementById('editGreetingInput');
         const updateGreetingBtn = document.getElementById('updateGreetingBtn');
@@ -277,50 +229,36 @@
             greetingDiv.innerHTML = formatted;
             greetingDiv.style.transform = "scale(1.02)";
             setTimeout(() => { greetingDiv.style.transform = "scale(1)"; }, 200);
+            saveToLocalStorage();
         }
         updateGreetingBtn.addEventListener('click', updateGreetingText);
-        editGreetingInput.value = "🎈 愿你的每一天都如糖果般甜蜜，愿你的每一岁都绽放光芒！生日快乐，万事胜意 🎉";
-        updateGreetingText();
         editGreetingInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') { e.preventDefault(); updateGreetingText(); } });
 
         // ========= 3. 名字管理 ==========
         const displayNameSpan = document.getElementById('displayName');
         const nameInput = document.getElementById('nameInput');
         const updateNameBtn = document.getElementById('updateNameBtn');
-        const copyLinkBtn = document.getElementById('copyLinkBtn');
 
-        function updateDisplayNameAndUrl() {
+        function updateDisplayName() {
             let newName = nameInput.value.trim();
             if(newName === "") { newName = "🌟 特别的你 🌟"; nameInput.value = newName; }
             displayNameSpan.innerHTML = `🎂 ${newName} 🎂`;
-            updateUrlParameter('name', newName);
-            showToast('✅ 名字已保存到链接中！');
+            saveToLocalStorage();
+            showToast('✅ 名字已保存');
         }
 
-        function initializeNameFromUrl() {
-            const urlName = getUrlParameter('name');
-            if (urlName && urlName.trim() !== "") {
-                const decodedName = decodeURIComponent(urlName);
-                nameInput.value = decodedName;
-                displayNameSpan.innerHTML = `🎂 ${decodedName} 🎂`;
-                return true;
-            }
-            return false;
-        }
+        updateNameBtn.addEventListener('click', updateDisplayName);
+        nameInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') { e.preventDefault(); updateDisplayName(); } });
 
-        updateNameBtn.addEventListener('click', updateDisplayNameAndUrl);
-        nameInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') { e.preventDefault(); updateDisplayNameAndUrl(); } });
-
-        // ========= 4. 图片管理（核心：保存到 URL）=========
+        // ========= 4. 图片管理（使用 localStorage 存储）=========
         const photoUploadInput = document.getElementById('photoUpload');
         const photoContainer = document.getElementById('photoContainer');
         const resetPhotoBtn = document.getElementById('resetPhotoBtn');
         const photoFrame = document.getElementById('photoFrame');
 
-        let currentImageBase64 = null;  // 存储当前图片的 base64
+        let currentImageBase64 = null;
 
-        // 显示图片（从 base64 或 URL）
-        function displayImageFromBase64(base64, isFromUrl = false) {
+        function displayImageFromBase64(base64) {
             if (!base64) {
                 resetToDefaultIcon();
                 return;
@@ -331,10 +269,7 @@
             img.alt = "生日照片";
             img.className = "photo-img";
             img.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:50%;";
-            img.onerror = () => {
-                console.warn("图片加载失败");
-                if (!isFromUrl) resetToDefaultIcon();
-            };
+            img.onerror = () => { resetToDefaultIcon(); };
             photoContainer.appendChild(img);
             currentImageBase64 = base64;
         }
@@ -344,84 +279,164 @@
             const defaultDiv = photoContainer.querySelector('.default-photo-icon');
             if (defaultDiv) { defaultDiv.style.cssText = "width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;"; }
             currentImageBase64 = null;
-            // 清除 URL 中的图片参数
-            updateUrlParameter('img', '');
         }
 
-        // 处理图片上传并保存到 URL
+        // 压缩图片
+        function compressImage(file, maxWidth = 500, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const base64 = canvas.toDataURL('image/jpeg', quality);
+                        resolve(base64);
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
         async function handleImageUpload(file) {
             if (!file || !file.type.startsWith('image/')) {
                 showToast('请选择图片文件', true);
                 return;
             }
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('图片大小不能超过 5MB', true);
+            if (file.size > 3 * 1024 * 1024) {
+                showToast('图片大小不能超过 3MB', true);
                 return;
             }
 
             showToast('📸 正在压缩图片...');
 
             try {
-                // 压缩图片（减少 URL 长度）
-                const compressedBase64 = await compressImageToBase64(file, 600, 0.6);
+                const compressedBase64 = await compressImage(file, 500, 0.7);
+                displayImageFromBase64(compressedBase64);
+                saveToLocalStorage();
+                showToast('✅ 图片已保存！');
 
-                // 检查 URL 长度限制（大多数浏览器限制约 2000 字符）
-                if (compressedBase64.length > 1800) {
-                    // 如果还是太长，进一步压缩
-                    const moreCompressed = await compressImageToBase64(file, 400, 0.5);
-                    if (moreCompressed.length > 2000) {
-                        showToast('图片太大，请选择更小的图片（建议小于 200KB）', true);
-                        return;
-                    }
-                    displayImageFromBase64(moreCompressed);
-                    updateUrlParameter('img', moreCompressed);
-                    showToast('✅ 图片已保存到链接！点击「复制分享链接」分享');
-                } else {
-                    displayImageFromBase64(compressedBase64);
-                    updateUrlParameter('img', compressedBase64);
-                    showToast('✅ 图片已保存到链接！点击「复制分享链接」分享');
-                }
-
-                // 动画效果
                 const frame = document.querySelector('.photo-frame');
                 frame.style.transform = "scale(1.05)";
                 setTimeout(() => { frame.style.transform = ""; }, 200);
-
             } catch (error) {
                 console.error('图片处理失败:', error);
                 showToast('图片处理失败，请重试', true);
             }
         }
 
-        // 从 URL 加载图片
-        function loadImageFromUrl() {
-            const urlImageBase64 = getUrlParameter('img');
-            if (urlImageBase64 && urlImageBase64.startsWith('data:image')) {
-                const decoded = decodeURIComponent(urlImageBase64);
-                displayImageFromBase64(decoded, true);
-                console.log('📀 从链接加载图片');
-                return true;
+        function resetToDefault() {
+            resetToDefaultIcon();
+            saveToLocalStorage();
+            showToast('已重置为默认图片');
+        }
+
+        // ========= 5. 本地存储管理 ==========
+        function saveToLocalStorage() {
+            const config = {
+                name: nameInput.value,
+                greeting: editGreetingInput.value,
+                image: currentImageBase64
+            };
+            localStorage.setItem('birthday_config', JSON.stringify(config));
+            console.log('💾 配置已保存到本地');
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('birthday_config');
+            if (saved) {
+                try {
+                    const config = JSON.parse(saved);
+                    if (config.name) {
+                        nameInput.value = config.name;
+                        displayNameSpan.innerHTML = `🎂 ${config.name} 🎂`;
+                    }
+                    if (config.greeting) {
+                        editGreetingInput.value = config.greeting;
+                        const formatted = config.greeting.replace(/\n/g, '<br>');
+                        greetingDiv.innerHTML = formatted;
+                    }
+                    if (config.image) {
+                        displayImageFromBase64(config.image);
+                    }
+                    console.log('📀 从本地加载配置成功');
+                    return true;
+                } catch(e) { console.warn('加载失败', e); }
             }
             return false;
         }
 
-        // 复制分享链接
-        function copyShareLink() {
-            const currentUrl = window.location.href;
-            navigator.clipboard.writeText(currentUrl).then(() => {
-                showToast('🔗 链接已复制！发给朋友，他们打开就能看到相同的图片和名字');
-            }).catch(() => {
-                showToast('复制失败，请手动复制地址栏链接', true);
-            });
+        // ========= 6. 导出/导入配置文件（分享用）=========
+        function exportConfig() {
+            const config = {
+                name: nameInput.value,
+                greeting: editGreetingInput.value,
+                image: currentImageBase64,
+                exportTime: new Date().toLocaleString()
+            };
+
+            const dataStr = JSON.stringify(config, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `birthday_祝福_${nameInput.value}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('✅ 配置文件已导出！发给朋友导入即可');
         }
 
-        // 重置为默认图片（清除 URL 中的图片）
-        function resetToDefault() {
-            resetToDefaultIcon();
-            showToast('已重置为默认图片');
+        function importConfig(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const config = JSON.parse(e.target.result);
+                    if (config.name) {
+                        nameInput.value = config.name;
+                        displayNameSpan.innerHTML = `🎂 ${config.name} 🎂`;
+                    }
+                    if (config.greeting) {
+                        editGreetingInput.value = config.greeting;
+                        const formatted = config.greeting.replace(/\n/g, '<br>');
+                        greetingDiv.innerHTML = formatted;
+                    }
+                    if (config.image) {
+                        displayImageFromBase64(config.image);
+                    }
+                    saveToLocalStorage();
+                    showToast('🎉 配置导入成功！');
+                } catch (error) {
+                    showToast('配置文件格式错误', true);
+                }
+            };
+            reader.readAsText(file);
         }
 
-        // 事件绑定
+        // ========= 7. UI 辅助函数 ==========
+        function showToast(msg, isError = false) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:${isError ? '#c24509' : '#5d3a1f'};color:#fff9f0;padding:12px 24px;border-radius:50px;font-size:14px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,0.2);max-width:90%;text-align:center;`;
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ========= 8. 事件绑定 ==========
         photoUploadInput.addEventListener('change', (e) => {
             if(e.target.files[0]) handleImageUpload(e.target.files[0]);
             photoUploadInput.value = '';
@@ -439,25 +454,24 @@
             resetToDefault();
         });
 
-        copyLinkBtn.addEventListener('click', copyShareLink);
+        document.getElementById('exportConfigBtn').addEventListener('click', exportConfig);
+        document.getElementById('importFileInput').addEventListener('change', (e) => {
+            if (e.target.files[0]) importConfig(e.target.files[0]);
+            e.target.value = '';
+        });
 
-        // 初始化：先加载 URL 中的图片，再加载名字
-        const hasUrlImage = loadImageFromUrl();
-        if (!hasUrlImage) {
-            // 没有图片时，可以设置一个默认图片（可选）
-            // 这里保持默认图标
-        }
-
-        // 名字初始化
-        const hasUrlName = initializeNameFromUrl();
-        if (!hasUrlName) {
+        // ========= 9. 初始化 ==========
+        const hasLocalConfig = loadFromLocalStorage();
+        if (!hasLocalConfig) {
+            // 设置默认值
             const defaultName = "代梦茹";
             nameInput.value = defaultName;
             displayNameSpan.innerHTML = `🎂 ${defaultName} 🎂`;
-            updateUrlParameter('name', defaultName);
+            editGreetingInput.value = "🎈 愿你的每一天都如糖果般甜蜜，愿你的每一岁都绽放光芒！生日快乐，万事胜意 🎉";
+            updateGreetingText();
         }
 
-        // ========= 5. 音乐播放器 ==========
+        // ========= 10. 音乐播放器 ==========
         let audioCtx = null, isPlaying = false, currentTimeout = null;
         const notes = [
             { freq: 261.63, duration: 0.4 }, { freq: 261.63, duration: 0.4 }, { freq: 293.66, duration: 0.4 },
@@ -502,7 +516,7 @@
         document.getElementById('playMusicBtn').addEventListener('click', playBirthdayMelody);
         document.getElementById('stopMusicBtn').addEventListener('click', stopMelody);
 
-        // ========= 6. 撒花特效 ==========
+        // ========= 11. 撒花特效 ==========
         function createFirework(x, y) {
             for(let i=0; i<24; i++) {
                 const fire = document.createElement('div');
